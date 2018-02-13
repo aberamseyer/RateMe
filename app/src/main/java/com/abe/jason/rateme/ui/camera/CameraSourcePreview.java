@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package abe.jason.rateme.ui.camera;
+package com.abe.jason.rateme.ui.camera;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -83,21 +86,25 @@ public class CameraSourcePreview extends ViewGroup {
 
     private void startIfReady() throws IOException {
         if (mStartRequested && mSurfaceAvailable) {
-            mCameraSource.start(mSurfaceView.getHolder());
-            if (mOverlay != null) {
-                Size size = mCameraSource.getPreviewSize();
-                int min = Math.min(size.getWidth(), size.getHeight());
-                int max = Math.max(size.getWidth(), size.getHeight());
-                if (isPortraitMode()) {
-                    // Swap width and height sizes when in portrait, since it will be rotated by
-                    // 90 degrees
-                    mOverlay.setCameraInfo(min, max, mCameraSource.getCameraFacing());
-                } else {
-                    mOverlay.setCameraInfo(max, min, mCameraSource.getCameraFacing());
+            if (ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED) {
+                mCameraSource.start(mSurfaceView.getHolder());
+                if (mOverlay != null) {
+                    Size size = mCameraSource.getPreviewSize();
+                    int min = Math.min(size.getWidth(), size.getHeight());
+                    int max = Math.max(size.getWidth(), size.getHeight());
+                    if (isPortraitMode()) {
+                        // Swap width and height sizes when in portrait, since it will be rotated by
+                        // 90 degrees
+                        mOverlay.setCameraInfo(min, max, mCameraSource.getCameraFacing());
+                    } else {
+                        mOverlay.setCameraInfo(max, min, mCameraSource.getCameraFacing());
+                    }
+                    mOverlay.clear();
                 }
-                mOverlay.clear();
+                mStartRequested = false;
             }
-            mStartRequested = false;
         }
     }
 

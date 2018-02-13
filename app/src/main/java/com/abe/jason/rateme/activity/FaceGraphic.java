@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package abe.jason.rateme;
+package com.abe.jason.rateme.activity;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.abe.jason.rateme.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
-
-import abe.jason.rateme.ui.camera.GraphicOverlay;
 
 /**
  * Graphic instance for rendering face position, orientation, and landmarks within an associated
  * graphic overlay view.
  */
 class FaceGraphic extends GraphicOverlay.Graphic {
+    private static final String TAG = "FaceGraphic.java";
+
     private static final float FACE_POSITION_RADIUS = 10.0f;
     private static final float ID_TEXT_SIZE = 40.0f;
     private static final float ID_Y_OFFSET = 50.0f;

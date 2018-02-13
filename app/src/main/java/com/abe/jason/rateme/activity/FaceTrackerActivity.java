@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package abe.jason.rateme;
+package com.abe.jason.rateme.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -29,6 +29,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.abe.jason.rateme.R;
+import com.abe.jason.rateme.ui.camera.CameraSourcePreview;
+import com.abe.jason.rateme.ui.camera.GraphicOverlay;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -40,15 +43,12 @@ import com.google.android.gms.vision.face.FaceDetector;
 import java.io.IOException;
 import java.util.HashSet;
 
-import abe.jason.rateme.ui.camera.CameraSourcePreview;
-import abe.jason.rateme.ui.camera.GraphicOverlay;
-
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
  * overlay graphics to indicate the position, size, and ID of each face.
  */
 public final class FaceTrackerActivity extends AppCompatActivity {
-    private static final String TAG = "FaceTracker";
+    private static final String TAG = "FaceTracker.java";
     private static HashSet<Face> faces = new HashSet<>();
     private static Face biggestFace = null;
     private CameraSource mCameraSource = null;
@@ -70,10 +70,10 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.main);
+        setContentView(R.layout.camera_preview);
 
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
+        mPreview = findViewById(R.id.preview);
+        mGraphicOverlay = findViewById(R.id.faceOverlay);
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
