@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.abe.jason.rateme.BuildConfig;
 import com.abe.jason.rateme.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -18,8 +19,12 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "FaceGraphic.java";
 
+    public static final String KAIROS_FACE_API_ID = BuildConfig.KAIROS_FACE_API_ID; // loaded from gradle
+    public static final String KAIROS_FACE_API_KEY = BuildConfig.KAIROS_FACE_API_KEY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

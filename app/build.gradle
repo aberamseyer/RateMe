@@ -41,6 +41,11 @@ android {
     }
     productFlavors {
     }
+    defaultConfig {
+        // API keys
+        buildConfigField "String", "KAIROS_FACE_API_ID", keystoreProperties['KAIROS_FACE_API_ID']
+        buildConfigField "String", "KAIROS_FACE_API_KEY", keystoreProperties['KAIROS_FACE_API_KEY']
+    }
 }
 
 dependencies {
