@@ -48,7 +48,7 @@ import java.util.HashSet;
  * overlay graphics to indicate the position, size, and ID of each face.
  */
 public final class FaceTrackerActivity extends AppCompatActivity {
-    private static final String TAG = "FaceTracker.java";
+    private static final String TAG = "FaceTrackerActivity.java";
     private static HashSet<Face> faces = new HashSet<>();
     private static Face biggestFace = null;
     private CameraSource mCameraSource = null;
