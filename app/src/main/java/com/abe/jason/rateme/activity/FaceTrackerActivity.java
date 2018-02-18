@@ -28,6 +28,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.abe.jason.rateme.R;
 import com.abe.jason.rateme.ui.camera.CameraSourcePreview;
@@ -83,6 +85,24 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         } else {
             requestCameraPermission();
         }
+
+        // Handler for camera button
+        final ImageView cameraButton = (ImageView) findViewById(R.id.cameraButton);
+        View.OnClickListener clickListener = new View.OnClickListener() {
+            public void onClick(View v) {
+                if (v.equals(cameraButton)) {
+                    // Behavior on click
+                    Context context = getApplicationContext();
+                    CharSequence text = "Triggered";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
+            }
+        };
+        cameraButton.setOnClickListener(clickListener);
+
     }
 
     /**

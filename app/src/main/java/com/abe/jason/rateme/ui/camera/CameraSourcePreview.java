@@ -24,8 +24,13 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.abe.jason.rateme.R;
+import com.abe.jason.rateme.activity.MainActivity;
 import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.CameraSource;
 
