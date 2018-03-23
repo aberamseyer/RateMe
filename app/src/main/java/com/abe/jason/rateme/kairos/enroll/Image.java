@@ -1,5 +1,5 @@
 
-package com.abe.jason.rateme.api.enroll;
+package com.abe.jason.rateme.kairos.enroll;
 
 import com.squareup.moshi.Json;
 

@@ -1,24 +1,14 @@
 
-package com.abe.jason.rateme.api.enroll;
+package com.abe.jason.rateme.kairos.recognize;
 
 import com.squareup.moshi.Json;
 
 import java.util.List;
 
-public class EnrollResponse {
+public class RecognizeResponse {
 
-    @Json(name = "face_id")
-    private String faceId;
     @Json(name = "images")
     private List<Image> images = null;
-
-    public String getFaceId() {
-        return faceId;
-    }
-
-    public void setFaceId(String faceId) {
-        this.faceId = faceId;
-    }
 
     public List<Image> getImages() {
         return images;

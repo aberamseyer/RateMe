@@ -1,5 +1,5 @@
 
-package com.abe.jason.rateme.api.recognize;
+package com.abe.jason.rateme.kairos.recognize;
 
 import com.squareup.moshi.Json;
 

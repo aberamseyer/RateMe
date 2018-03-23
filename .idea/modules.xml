@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RateMe.iml" filepath="$PROJECT_DIR$/RateMe.iml" />
-      <module fileurl="file://C:\Users\aramsey\StudioProjects\RateMe\RateMe.iml" filepath="C:\Users\aramsey\StudioProjects\RateMe\RateMe.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\aramsey\StudioProjects\RateMe\app\app.iml" filepath="C:\Users\aramsey\StudioProjects\RateMe\app\app.iml" />
     </modules>
   </component>
 </project>

@@ -30,8 +30,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.abe.jason.rateme.R;
-import com.abe.jason.rateme.api.enroll.EnrollRequest;
-import com.abe.jason.rateme.api.recognize.RecognizeRequest;
+import com.abe.jason.rateme.kairos.enroll.EnrollRequest;
+import com.abe.jason.rateme.kairos.recognize.RecognizeRequest;
 import com.abe.jason.rateme.ui.camera.CameraSourcePreview;
 import com.abe.jason.rateme.ui.camera.GraphicOverlay;
 import com.google.android.gms.common.ConnectionResult;
@@ -43,7 +43,6 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
-import java.util.HashSet;
 
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
@@ -53,7 +52,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private static final String TAG = "FaceTrackerActivity.java";
 
     private CameraSource mCameraSource = null;
-    private HashSet<Integer> checkedFaceIds = new HashSet<>();
+    private boolean hasSubmitted = false;   // flag that ensures we only send 1 face
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
@@ -326,8 +325,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-            if(mFaceGraphic.inBounds && !checkedFaceIds.contains(face.getId())) {
-                checkedFaceIds.add(face.getId());
+            if(mFaceGraphic.inBounds && !hasSubmitted) {
+                hasSubmitted = true;
                 mCameraSource.takePicture(new CameraSource.ShutterCallback() {
                     @Override
                     public void onShutter() {

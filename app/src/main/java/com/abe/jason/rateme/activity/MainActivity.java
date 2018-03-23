@@ -102,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        signOut();
+    }
+
     private void signOut() {
         // Firebase sign out
         mFirebaseDatabase.child("users").child(mFireBaseUserId).child("active").setValue(false); // set user to inactive
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                         new ResultCallback<Status>() {
                             @Override
                             public void onResult(@NonNull Status status) {
+                                Toast.makeText(MainActivity.this, "Signed Out", Toast.LENGTH_SHORT).show();
                                 finish();
                                 // Get sign out result
                             }
