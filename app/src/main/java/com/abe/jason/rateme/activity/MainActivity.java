@@ -23,11 +23,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import okhttp3.OkHttpClient;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity.java";
 
     public static final String KAIROS_FACE_API_ID = BuildConfig.KAIROS_FACE_API_ID; // loaded from gradle
     public static final String KAIROS_FACE_API_KEY = BuildConfig.KAIROS_FACE_API_KEY;
+    public static final OkHttpClient client = new OkHttpClient();
 
     // Firebase variables
     FirebaseAuth mFirebaseAuth;
@@ -80,11 +83,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // camera button
-        findViewById(R.id.btn_launch_camera).setOnClickListener(new View.OnClickListener() {
+        // camera buttons
+        findViewById(R.id.btn_enroll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            startActivity(new Intent(MainActivity.this, FaceTrackerActivity.class));
+                Intent intent = new Intent(MainActivity.this, FaceTrackerActivity.class);
+                intent.putExtra("method", "enroll");
+                startActivity(intent);
+            }
+        });
+        findViewById(R.id.btn_recognize).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FaceTrackerActivity.class);
+                intent.putExtra("method", "recognize");
+                startActivity(intent);
             }
         });
     }

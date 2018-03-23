@@ -18,6 +18,7 @@ package com.abe.jason.rateme.activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.abe.jason.rateme.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
@@ -29,21 +30,15 @@ import com.google.android.gms.vision.face.Face;
 class FaceGraphic extends GraphicOverlay.Graphic {
     private static final String TAG = "FaceGraphic.java";
 
-    private static final float FACE_POSITION_RADIUS = 10.0f;
     private static final float ID_TEXT_SIZE = 40.0f;
-    private static final float ID_Y_OFFSET = 50.0f;
-    private static final float ID_X_OFFSET = -50.0f;
     private static final float BOX_STROKE_WIDTH = 5.0f;
-
-    private static int mCurrentColorIndex = 0;
 
     private Paint mFacePositionPaint;
     private Paint mIdPaint;
     private Paint mBoxPaint;
 
     private volatile Face mFace;
-    private int mFaceId;
-    private float mFaceHappiness;
+    boolean inBounds = false;
 
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
@@ -62,11 +57,6 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         mBoxPaint.setStyle(Paint.Style.STROKE);
         mBoxPaint.setStrokeWidth(BOX_STROKE_WIDTH);
     }
-
-    void setId(int id) {
-        mFaceId = id;
-    }
-
 
     /**
      * Updates the face instance from the detection of the most recent frame.  Invalidates the
@@ -104,5 +94,12 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float right = x + xOffset;
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
+        Rect bounds = canvas.getClipBounds();
+
+        if(left >= 0 && top >= 0) {
+            if(!inBounds && right < bounds.right && bottom < bounds.bottom) {
+                inBounds = true;
+            }
+        }
     }
 }

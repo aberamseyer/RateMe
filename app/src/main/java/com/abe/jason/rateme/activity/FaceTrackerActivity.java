@@ -28,10 +28,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.abe.jason.rateme.R;
+import com.abe.jason.rateme.api.enroll.EnrollRequest;
+import com.abe.jason.rateme.api.recognize.RecognizeRequest;
 import com.abe.jason.rateme.ui.camera.CameraSourcePreview;
 import com.abe.jason.rateme.ui.camera.GraphicOverlay;
 import com.google.android.gms.common.ConnectionResult;
@@ -51,9 +51,9 @@ import java.util.HashSet;
  */
 public final class FaceTrackerActivity extends AppCompatActivity {
     private static final String TAG = "FaceTrackerActivity.java";
-    private static HashSet<Face> faces = new HashSet<>();
-    private static Face biggestFace = null;
+
     private CameraSource mCameraSource = null;
+    private HashSet<Integer> checkedFaceIds = new HashSet<>();
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
@@ -87,22 +87,21 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         }
 
         // Handler for camera button
-        final ImageView cameraButton = (ImageView) findViewById(R.id.cameraButton);
-        View.OnClickListener clickListener = new View.OnClickListener() {
-            public void onClick(View v) {
-                if (v.equals(cameraButton)) {
-                    // Behavior on click
-                    Context context = getApplicationContext();
-                    CharSequence text = "Triggered";
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
-                }
-            }
-        };
-        cameraButton.setOnClickListener(clickListener);
-
+//        final ImageView cameraButton = (ImageView) findViewById(R.id.cameraButton);
+//        View.OnClickListener clickListener = new View.OnClickListener() {
+//            public void onClick(View v) {
+//                if (v.equals(cameraButton)) {
+//                    // Behavior on click
+//                    Context context = getApplicationContext();
+//                    CharSequence text = "Triggered";
+//                    int duration = Toast.LENGTH_SHORT;
+//
+//                    Toast toast = Toast.makeText(context, text, duration);
+//                    toast.show();
+//                }
+//            }
+//        };
+//        cameraButton.setOnClickListener(clickListener);
     }
 
     /**
@@ -147,6 +146,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         FaceDetector detector = new FaceDetector.Builder(context)
                 .setClassificationType(FaceDetector.ALL_CLASSIFICATIONS)
+                .setProminentFaceOnly(true)
+                .setMinFaceSize(0.6f)
                 .build();
 
         detector.setProcessor(
@@ -167,7 +168,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         mCameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(640, 480)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setRequestedFps(30.0f)
                 .build();
     }
@@ -303,7 +304,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private class GraphicFaceTracker extends Tracker<Face> {
         private GraphicOverlay mOverlay;
         private FaceGraphic mFaceGraphic;
-        private Face face;
 
         GraphicFaceTracker(GraphicOverlay overlay) {
             mOverlay = overlay;
@@ -315,9 +315,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
          */
         @Override
         public void onNewItem(int faceId, Face item) {
-            this.face = item;
-            faces.add(this.face);
-            mFaceGraphic.setId(faceId);
+
         }
 
         /**
@@ -326,12 +324,31 @@ public final class FaceTrackerActivity extends AppCompatActivity {
          */
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
-            faces.add(this.face);
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-            calcBiggestFace();
-            if (this.face.getId() != biggestFace.getId())
-                mOverlay.remove(mFaceGraphic);
+            if(mFaceGraphic.inBounds && !checkedFaceIds.contains(face.getId())) {
+                checkedFaceIds.add(face.getId());
+                mCameraSource.takePicture(new CameraSource.ShutterCallback() {
+                    @Override
+                    public void onShutter() {
+
+                    }
+                }, new CameraSource.PictureCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] bytes) {
+                        switch("" + getIntent().getStringExtra("method")) {
+                            case "enroll":
+                                new EnrollRequest(bytes, FaceTrackerActivity.this).execute();
+                                break;
+                            case "recognize":
+                                new RecognizeRequest(bytes, FaceTrackerActivity.this).execute();
+                                break;
+                        }
+
+                    }
+                });
+
+            }
         }
 
         /**
@@ -341,9 +358,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
-            faces.remove(this.face);
-            if(biggestFace != null && this.face.getId() == biggestFace.getId())
-                biggestFace = null;
             mOverlay.remove(mFaceGraphic);
         }
 
@@ -353,17 +367,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
          */
         @Override
         public void onDone() {
-            faces.remove(this.face);
-            if(biggestFace != null && this.face.getId() == biggestFace.getId())
-                biggestFace = null;
             mOverlay.remove(mFaceGraphic);
-        }
-
-        private void calcBiggestFace() {
-            for (Face face : faces) {
-                if (biggestFace == null || face.getHeight() * face.getWidth() >= biggestFace.getWidth() * biggestFace.getHeight())
-                    biggestFace = face;
-            }
         }
     }
 }

@@ -172,7 +172,7 @@ public class LoginActivity extends AppCompatActivity implements
                             Toast.makeText(LoginActivity.this, "Login failed, you might not be connect to the Internet", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d(TAG, "signInSuccess");
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
                     }
                 });

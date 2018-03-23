@@ -21,10 +21,12 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name="com.abe.jason.rateme.activity.LoginActivity"
             android:icon="@drawable/icon"
             android:label="RateMe"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,8 +34,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.abe.jason.rateme.activity.MainActivity"
-            android:label="Main Activity"/>
+
+        <activity
+            android:name="com.abe.jason.rateme.activity.MainActivity"
+            android:label="Main Activity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
         <activity
             android:name=".activity.FaceTrackerActivity"
             android:screenOrientation="fullSensor"

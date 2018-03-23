@@ -22,7 +22,7 @@
 
   </com.abe.jason.rateme.ui.camera.CameraSourcePreview>
 
-  <ImageView
+<!--  <ImageView
       android:id="@+id/cameraButton"
       android:layout_width="100dp"
       android:layout_height="100dp"
@@ -33,6 +33,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:srcCompat="@drawable/camera_button" />
+      app:srcCompat="@drawable/camera_button" />-->
 
 </android.support.constraint.ConstraintLayout>
