@@ -31,14 +31,16 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private static final String TAG = "FaceGraphic.java";
 
     private static final float ID_TEXT_SIZE = 40.0f;
+//    private static final float ID_Y_OFFSET = 50.0f;
+//    private static final float ID_X_OFFSET = -50.0f;
     private static final float BOX_STROKE_WIDTH = 5.0f;
 
     private Paint mFacePositionPaint;
     private Paint mIdPaint;
     private Paint mBoxPaint;
-
-    private volatile Face mFace;
     boolean inBounds = false;
+    static String info = "";
+    private volatile Face mFace;
 
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
@@ -82,7 +84,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
 //        canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
 //        canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
-//        canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
+//        canvas.drawText("id: " + info, x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
 //        canvas.drawText("right eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
 //        canvas.drawText("left eye: " + String.format("%.2f", face.getIsLeftEyeOpenProbability()), x - ID_X_OFFSET*2, y - ID_Y_OFFSET*2, mIdPaint);
 
@@ -94,8 +96,10 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float right = x + xOffset;
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
-        Rect bounds = canvas.getClipBounds();
+        canvas.drawText(info, left + 10, bottom - 20, mIdPaint);
 
+        // determine if the box is entirely on the device's screen
+        Rect bounds = canvas.getClipBounds();
         if(left >= 0 && top >= 0) {
             if(!inBounds && right < bounds.right && bottom < bounds.bottom) {
                 inBounds = true;

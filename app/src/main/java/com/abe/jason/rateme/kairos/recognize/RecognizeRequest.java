@@ -1,13 +1,9 @@
 package com.abe.jason.rateme.kairos.recognize;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.abe.jason.rateme.activity.FaceTrackerActivity;
+import com.abe.jason.rateme.activity.AsyncCallback;
 import com.abe.jason.rateme.activity.MainActivity;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -31,20 +27,17 @@ public class RecognizeRequest extends AsyncTask<String, String, String> {
     private static final Moshi moshi = new Moshi.Builder().build();
     private static final JsonAdapter<RecognizeResponse> recognizeResponseAdapter = moshi.adapter(RecognizeResponse.class);
 
-    private Context mContext;
+    private AsyncCallback asyncCallback;
     private byte[] file;
-    private boolean success = false;
 
-    public RecognizeRequest(byte[] file, Context mContext) {
+    public RecognizeRequest(byte[] file, AsyncCallback asyncCallback) {
         this.file = new byte[file.length];
         this.file = file;
-        this.mContext = mContext;
+        this.asyncCallback = asyncCallback;
     }
 
     @Override
-    protected void onPreExecute() {
-        ((Activity) mContext).finish();
-    }
+    protected void onPreExecute() {  }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -63,14 +56,15 @@ public class RecognizeRequest extends AsyncTask<String, String, String> {
                 .post(requestBody)
                 .build();
 
+        String id = "";
         try {
             Response response = MainActivity.client.newCall(request).execute();
             if(!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             try {
                 RecognizeResponse responseData = recognizeResponseAdapter.fromJson(response.body().source());
-                responseString = "I see firebase user id#: " + responseData.getImages().get(0).getTransaction().getSubjectId();
-                success = true;
+                id = responseData.getImages().get(0).getTransaction().getSubjectId();
+                responseString = "I see firebase user id#: " + response;
             } catch (RuntimeException e) {
                 responseString = "Couldn't recognize anyone";
             }
@@ -78,16 +72,12 @@ public class RecognizeRequest extends AsyncTask<String, String, String> {
             Log.d(TAG, "Error while making API request");
         }
         Log.d(TAG, responseString);
-        return responseString;
+        return id;
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        if (!success) {
-            Context appContext = mContext.getApplicationContext();
-            appContext.startActivity(new Intent(appContext, FaceTrackerActivity.class).putExtra("method", "recognize"));
-        }
-        Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+        asyncCallback.recognizeResponse(result);
     }
 }

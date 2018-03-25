@@ -51,6 +51,7 @@ public class GraphicOverlay extends View {
     private float mHeightScaleFactor = 1.0f;
     private int mFacing = CameraSource.CAMERA_FACING_BACK;
     private Set<Graphic> mGraphics = new HashSet<>();
+    private String info = "";
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass

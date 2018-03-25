@@ -28,6 +28,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.abe.jason.rateme.R;
 import com.abe.jason.rateme.kairos.enroll.EnrollRequest;
@@ -41,8 +42,12 @@ import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
@@ -101,6 +106,13 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 //            }
 //        };
 //        cameraButton.setOnClickListener(clickListener);
+        findViewById(R.id.btn_camera_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FaceGraphic.info = "";
+                finish();
+            }
+        });
     }
 
     /**
@@ -300,7 +312,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
      * Face tracker for each detected individual. This maintains a face graphic within the app's
      * associated face overlay.
      */
-    private class GraphicFaceTracker extends Tracker<Face> {
+    private class GraphicFaceTracker extends Tracker<Face> implements AsyncCallback {
         private GraphicOverlay mOverlay;
         private FaceGraphic mFaceGraphic;
 
@@ -325,7 +337,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-            if(mFaceGraphic.inBounds && !hasSubmitted) {
+            if (mFaceGraphic.inBounds && !hasSubmitted) {
                 hasSubmitted = true;
                 mCameraSource.takePicture(new CameraSource.ShutterCallback() {
                     @Override
@@ -335,12 +347,12 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                 }, new CameraSource.PictureCallback() {
                     @Override
                     public void onPictureTaken(byte[] bytes) {
-                        switch("" + getIntent().getStringExtra("method")) {
+                        switch ("" + getIntent().getStringExtra("method")) {
                             case "enroll":
                                 new EnrollRequest(bytes, FaceTrackerActivity.this).execute();
                                 break;
                             case "recognize":
-                                new RecognizeRequest(bytes, FaceTrackerActivity.this).execute();
+                                new RecognizeRequest(bytes, GraphicFaceTracker.this).execute();
                                 break;
                         }
 
@@ -367,6 +379,34 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         @Override
         public void onDone() {
             mOverlay.remove(mFaceGraphic);
+            FaceGraphic.info = "";
+            hasSubmitted = false;
+            Log.d(TAG, "onDone()");
+        }
+
+        @Override
+        public void recognizeResponse(String id) {
+            switch (id) {
+                case "-1":
+                    Toast.makeText(FaceTrackerActivity.this, "Couldn't recognize face", Toast.LENGTH_SHORT).show();
+                    hasSubmitted = false;
+                    break;
+                default:
+                    MainActivity.mFirebaseDatabase.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() { // reads the data once
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                FaceGraphic.info = "" + dataSnapshot.child("name").getValue();
+                                try {
+                                    float rating = Float.parseFloat("" + dataSnapshot.child("rating").getValue());
+                                    FaceGraphic.info += ", " + String.format(Locale.getDefault(), "%.1f", rating) + " stars";
+                                } catch (NumberFormatException e) { }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) { }
+                    });
+            }
         }
     }
 }
