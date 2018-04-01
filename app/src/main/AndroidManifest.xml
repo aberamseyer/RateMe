@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.abe.jason.rateme"
-    android:installLocation="auto"
-    android:versionCode="1"
-    android:versionName="1">
+    android:installLocation="auto">
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -21,6 +19,11 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name="com.abe.jason.rateme.activity.Introduction"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait"
+            />
 
         <activity
             android:name="com.abe.jason.rateme.activity.LoginActivity"

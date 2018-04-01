@@ -179,8 +179,10 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         mCameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(640, 480)
-                .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                .setFacing(getIntent().getStringExtra("method").equals("enroll") ? // use the front camera to enroll faces
+                        CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_BACK)
                 .setRequestedFps(30.0f)
+                .setAutoFocusEnabled(true)
                 .build();
     }
 
@@ -251,12 +253,12 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                finish();
+                finishAffinity();
             }
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Face Tracker sample")
+        builder.setTitle("Camera Permission was Denied")
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show();
