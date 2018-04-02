@@ -56,15 +56,21 @@ public class RecognizeRequest extends AsyncTask<String, String, String> {
                 .post(requestBody)
                 .build();
 
-        String id = "";
+        String id = "-1";
         try {
             Response response = MainActivity.client.newCall(request).execute();
             if(!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             try {
                 RecognizeResponse responseData = recognizeResponseAdapter.fromJson(response.body().source());
-                id = responseData.getImages().get(0).getTransaction().getSubjectId();
-                responseString = "I see firebase user id#: " + response;
+                if(responseData.getImages().get(0).getTransaction().getSubjectId() != null) {
+                    id = responseData.getImages().get(0).getTransaction().getSubjectId();
+                    responseString = "I see firebase user id#: " + response;
+                }
+                else {
+                    responseString = "Couldn't recognize anyone";
+                }
+
             } catch (RuntimeException e) {
                 responseString = "Couldn't recognize anyone";
             }
