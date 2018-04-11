@@ -15,11 +15,22 @@
  */
 package com.abe.jason.rateme.activity;
 
+import android.app.Application;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.Rating;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
+import com.abe.jason.rateme.R;
 import com.abe.jason.rateme.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
 
@@ -40,11 +51,16 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private Paint mBoxPaint;
     boolean inBounds = false;
     static String info = "";
+    static String name = "";
+    static float rating = 0.0f;
     private volatile Face mFace;
+    private Context context;
+    LayoutInflater mInflater;
 
-    FaceGraphic(GraphicOverlay overlay) {
+
+    FaceGraphic(GraphicOverlay overlay, Context context) {
         super(overlay);
-
+        this.context = context;
         final int selectedColor = Color.YELLOW;
 
         mFacePositionPaint = new Paint();
@@ -97,6 +113,41 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
         canvas.drawText(info, left + 10, bottom - 20, mIdPaint);
+
+
+        //fancy info overlay-------------------------------------------
+
+        //Set a Rect for the 200 x 200 px center of a 400 x 400 px area
+        Rect rect = new Rect();
+        rect.set((int)left, (int)bottom, (int)right, (int)top+300);
+
+        //Allocate a new Bitmap to draw into
+        Bitmap bitmap = Bitmap.createBitmap(600, 600, Bitmap.Config.ARGB_8888);
+        canvas.drawBitmap(bitmap, rect, rect, null );
+
+        //inflate the main layout, aka the root from info_overlay
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = mInflater.inflate(R.layout.info_overlay, null);
+
+        //accessing layout children
+        RatingBar ratingBar = (RatingBar)v.findViewById(R.id.ratingBar);
+        ratingBar.setRating(rating);
+        TextView userName = (TextView)v.findViewById(R.id.name);
+        userName.setText(name);
+
+        v.measure(View.MeasureSpec.getSize(v.getMeasuredWidth()), View.MeasureSpec.getSize(v.getMeasuredHeight()));
+        v.layout(0, 0, rect.width(), rect.height());
+
+        canvas.save();
+        canvas.translate(rect.left, rect.top);
+        v.draw(canvas);
+        canvas.restore();
+
+        //the rendering of the view into the bitmap
+        ImageView imageView = new ImageView(context);
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        imageView.setImageBitmap(bitmap);
 
         // determine if the box is entirely on the device's screen
         Rect bounds = canvas.getClipBounds();

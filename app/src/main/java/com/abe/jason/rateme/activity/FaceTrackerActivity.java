@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -180,7 +181,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         mCameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(640, 480)
                 .setFacing(getIntent().getStringExtra("method").equals("enroll") ? // use the front camera to enroll faces
-                        CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_BACK)
+                        CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_FRONT) //switching this for testing
                 .setRequestedFps(30.0f)
                 .setAutoFocusEnabled(true)
                 .build();
@@ -320,7 +321,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         GraphicFaceTracker(GraphicOverlay overlay) {
             mOverlay = overlay;
-            mFaceGraphic = new FaceGraphic(overlay);
+            mFaceGraphic = new FaceGraphic(overlay, getApplicationContext());
         }
 
         /**
@@ -392,6 +393,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                 case "-1":
                     Toast.makeText(FaceTrackerActivity.this, "Couldn't recognize face", Toast.LENGTH_SHORT).show();
                     hasSubmitted = false;
+                    FaceGraphic.rating = 0.0f;
+                    FaceGraphic.name = "";
                     break;
                 default:
                     MainActivity.mFirebaseDatabase.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() { // reads the data once
@@ -399,9 +402,11 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()) {
                                 FaceGraphic.info = "" + dataSnapshot.child("name").getValue();
+                                FaceGraphic.name =  FaceGraphic.info;
                                 try {
                                     float rating = Float.parseFloat("" + dataSnapshot.child("rating").getValue());
                                     FaceGraphic.info += ", " + String.format(Locale.getDefault(), "%.1f", rating) + " stars";
+                                    FaceGraphic.rating = rating;
                                 } catch (NumberFormatException e) { }
                             }
                         }
