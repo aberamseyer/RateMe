@@ -2,10 +2,25 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true">
+
+  <android.support.design.widget.FloatingActionButton
+      android:id="@+id/viewProfileBtn"
+      android:layout_width="78dp"
+      android:layout_height="69dp"
+      android:layout_marginBottom="8dp"
+      android:clickable="true"
+      android:visibility="invisible"
+      app:backgroundTint="@color/darker"
+      app:elevation="7dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="@+id/preview"
+      app:rippleColor="@color/gradientEnd"
+      app:srcCompat="@drawable/ic_arrow_forward_white" />
 
   <com.abe.jason.rateme.ui.camera.CameraSourcePreview
       android:id="@+id/preview"

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/ratingLabel"
+            android:layout_width="60dp"
+            android:layout_height="42dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="3.43"
+            android:textAlignment="center"
+            android:textSize="26sp"
+            android:textStyle="italic"
+            app:layout_constraintBaseline_toBaselineOf="@+id/nameLabel"
+            app:layout_constraintStart_toEndOf="@+id/nameLabel" />
+
+        <TextView
+            android:id="@+id/nameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Joe Shmo"
+            android:textSize="45sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <RatingBar
+        android:id="@+id/giveRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="72dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="196dp"
+        android:stepSize=".1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/instructionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Leave a rating!"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="@+id/giveRatingBar"
+        app:layout_constraintStart_toStartOf="@+id/giveRatingBar"
+        app:layout_constraintTop_toBottomOf="@+id/giveRatingBar" />
+</android.support.constraint.ConstraintLayout>

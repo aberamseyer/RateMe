@@ -19,36 +19,36 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name="com.abe.jason.rateme.activity.Introduction"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:screenOrientation="portrait"
-            />
-
         <activity
-            android:name="com.abe.jason.rateme.activity.LoginActivity"
+            android:name=".activity.Introduction"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".activity.LoginActivity"
             android:icon="@drawable/icon"
             android:label="RateMe"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.abe.jason.rateme.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="Main Activity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-
         <activity
             android:name=".activity.FaceTrackerActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|keyboardHidden"
             android:label="Track a Face"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:label="Profile Activity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
 </manifest>

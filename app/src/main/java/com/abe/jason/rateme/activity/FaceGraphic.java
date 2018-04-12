@@ -117,7 +117,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
 
         //fancy info overlay-------------------------------------------
 
-        //Set a Rect for the 200 x 200 px center of a 400 x 400 px area
+        //Set a Rect
         Rect rect = new Rect();
         rect.set((int)left, (int)bottom, (int)right, (int)top+300);
 
@@ -134,6 +134,10 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         ratingBar.setRating(rating);
         TextView userName = (TextView)v.findViewById(R.id.name);
         userName.setText(name);
+
+        if(name.equals("") || name == null) {
+            ratingBar.setNumStars(0);
+        }
 
         v.measure(View.MeasureSpec.getSize(v.getMeasuredWidth()), View.MeasureSpec.getSize(v.getMeasuredHeight()));
         v.layout(0, 0, rect.width(), rect.height());

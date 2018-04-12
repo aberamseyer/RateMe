@@ -21,9 +21,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -56,6 +58,8 @@ import java.util.Locale;
  */
 public final class FaceTrackerActivity extends AppCompatActivity {
     private static final String TAG = "FaceTrackerActivity.java";
+
+    private FloatingActionButton profileViewBtn;
 
     private CameraSource mCameraSource = null;
     private boolean hasSubmitted = false;   // flag that ensures we only send 1 face
@@ -111,6 +115,9 @@ public final class FaceTrackerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FaceGraphic.info = "";
+                FaceGraphic.rating = 0.0f;
+                FaceGraphic.name = "";
+                try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
                 finish();
             }
         });
@@ -383,6 +390,9 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         public void onDone() {
             mOverlay.remove(mFaceGraphic);
             FaceGraphic.info = "";
+            FaceGraphic.rating = 0.0f;
+            FaceGraphic.name = "";
+            try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
             hasSubmitted = false;
             Log.d(TAG, "onDone()");
         }
@@ -395,6 +405,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                     hasSubmitted = false;
                     FaceGraphic.rating = 0.0f;
                     FaceGraphic.name = "";
+                    try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
                     break;
                 default:
                     MainActivity.mFirebaseDatabase.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() { // reads the data once
@@ -405,8 +416,21 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                                 FaceGraphic.name =  FaceGraphic.info;
                                 try {
                                     float rating = Float.parseFloat("" + dataSnapshot.child("rating").getValue());
+
                                     FaceGraphic.info += ", " + String.format(Locale.getDefault(), "%.1f", rating) + " stars";
                                     FaceGraphic.rating = rating;
+
+                                    profileViewBtn = findViewById(R.id.viewProfileBtn);
+                                    profileViewBtn.setVisibility(View.VISIBLE);
+                                    profileViewBtn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent myIntent = new Intent(FaceTrackerActivity.this, ProfileActivity.class);
+                                            myIntent.putExtra("passedName", FaceGraphic.name); //Optional parameters
+                                            myIntent.putExtra("passedRating", FaceGraphic.rating); //Optional parameters
+                                            FaceTrackerActivity.this.startActivity(myIntent);
+                                        }
+                                    });
                                 } catch (NumberFormatException e) { }
                             }
                         }
