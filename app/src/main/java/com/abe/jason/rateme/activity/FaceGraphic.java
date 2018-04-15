@@ -15,14 +15,12 @@
  */
 package com.abe.jason.rateme.activity;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.media.Rating;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,7 +110,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float right = x + xOffset;
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
-        canvas.drawText(info, left + 10, bottom - 20, mIdPaint);
+//        canvas.drawText(info, left + 10, bottom - 20, mIdPaint);
 
 
         //fancy info overlay-------------------------------------------
