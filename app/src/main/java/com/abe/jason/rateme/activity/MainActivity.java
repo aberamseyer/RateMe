@@ -3,7 +3,6 @@ package com.abe.jason.rateme.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -146,15 +145,15 @@ public class MainActivity extends AppCompatActivity {
                 // Action to perform when Home Menu item is selected.
                 pushFragment(new HomeFragment());
                 break;
-            case R.id.action_camera:
+            /*case R.id.action_camera:
                 // Action to perform when Camera Menu item is selected.
                 Intent intent = new Intent(MainActivity.this, FaceTrackerActivity.class);
                 intent.putExtra("method", "recognize");
                 startActivity(intent);
-                break;
+                break;*/
             case R.id.action_account:
                 // Action to perform when Account Menu item is selected.
-//                pushFragment(new AccountFragment());
+                pushFragment(new ProfileFragment());
                 break;
         }
     }

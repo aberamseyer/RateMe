@@ -12,4 +12,10 @@
     <string name='camera'>Camera</string>
     <string name='home'>Home</string>
     <string name='account'>Account</string>
+    <string name="logout">Log Out</string>
+    <string name="train">Train</string>
+    <string name="recognize">Recognize</string>
+    <string name="yourrating"><i>Your Rating</i></string>
+    <string name="rate_someone">Rate Someone</string>
+    <string name="joe_shmoe">Joe Shmoe</string>
 </resources>

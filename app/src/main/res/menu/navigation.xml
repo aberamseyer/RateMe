@@ -5,10 +5,10 @@
         android:icon="@drawable/ic_home"
         android:title="@string/home"/>
 
-    <item
+    <!--<item
         android:id="@+id/action_camera"
         android:icon="@drawable/ic_photo_camera"
-        android:title="@string/camera"/>
+        android:title="@string/camera"/>-->
 
     <item
         android:id="@+id/action_account"
