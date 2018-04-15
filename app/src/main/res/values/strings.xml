@@ -9,4 +9,13 @@
     <string name="app_intro">Think of this as a Yelp© for human interactions. We interact with others so often, it\'s nice to assign a number to how people perform at basic social functions.</string>
     <string name="how_to_use">To use this app, go about your daily life as usual. After having a conversation or interaction with a person, ask if you can rate them on this app. If they also use the app, you\'ll be able to pull up their profile by pointing your camera at their face. Once you do, give them a rating and ask for them to rate you back! It\'s most fun when everyone does it!</string>
     <string name='facial_agreement'>By using RateMe, you give us permission to upload pictures from your device for facial recognition purposes. RateMe never uses your images for any other purpose, nor does it sell your data to anyone. The service we use for facial recognition is Kairos©. Check their privacy policy for more details at www.kairos.com.</string>
+    <string name='camera'>Camera</string>
+    <string name='home'>Home</string>
+    <string name='account'>Account</string>
+    <string name="logout">Log Out</string>
+    <string name="train">Train</string>
+    <string name="recognize">Recognize</string>
+    <string name="yourrating"><i>Your Rating</i></string>
+    <string name="rate_someone">Rate Someone</string>
+    <string name="joe_shmoe">Joe Shmoe</string>
 </resources>

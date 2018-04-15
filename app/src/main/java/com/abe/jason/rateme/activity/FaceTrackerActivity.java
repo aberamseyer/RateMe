@@ -62,7 +62,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private FloatingActionButton profileViewBtn;
 
     private CameraSource mCameraSource = null;
-    private boolean hasSubmitted = false;   // flag that ensures we only send 1 face
+    private boolean hasSubmitted = false;   // flag that ensures we only send 1 request per unique face
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
