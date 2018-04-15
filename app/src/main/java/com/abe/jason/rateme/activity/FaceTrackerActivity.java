@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -58,7 +57,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private static final String TAG = "FaceTrackerActivity.java";
 
     private CameraSource mCameraSource = null;
-    private boolean hasSubmitted = false;   // flag that ensures we only send 1 face
+    private boolean hasSubmitted = false;   // flag that ensures we only send 1 request per unique face
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;

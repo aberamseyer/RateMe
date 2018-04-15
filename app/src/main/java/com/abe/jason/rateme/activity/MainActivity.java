@@ -1,12 +1,17 @@
 package com.abe.jason.rateme.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.abe.jason.rateme.BuildConfig;
@@ -76,31 +81,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // logout button
-        findViewById(R.id.btn_logout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            signOut();
-            }
-        });
-
-        // camera buttons
-        findViewById(R.id.btn_enroll).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FaceTrackerActivity.class);
-                intent.putExtra("method", "enroll");
-                startActivity(intent);
-            }
-        });
-        findViewById(R.id.btn_recognize).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FaceTrackerActivity.class);
-                intent.putExtra("method", "recognize");
-                startActivity(intent);
-            }
-        });
+        setupBottomNavigation();
     }
 
     @Override
@@ -108,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         signOut();
     }
 
-    private void signOut() {
+    public void signOut() {
         // Firebase sign out
         mFirebaseDatabase.child("users").child(mFireBaseUserId).child("active").setValue(false); // set user to inactive
         mFirebaseAuth.signOut();
@@ -134,5 +115,61 @@ public class MainActivity extends AppCompatActivity {
             public void onConnectionSuspended(int i) {
             }
         });
+    }
+
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        if (bottomNavigationView != null) {
+
+            // Select first menu item by default and show Fragment accordingly.
+            Menu menu = bottomNavigationView.getMenu();
+            selectFragment(menu.getItem(0));
+
+            // Set action to perform when any menu-item is selected.
+            bottomNavigationView.setOnNavigationItemSelectedListener(
+                    new BottomNavigationView.OnNavigationItemSelectedListener() {
+                        @Override
+                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                            selectFragment(item);
+                            return false;
+                        }
+                    });
+        }
+    }
+
+    protected void selectFragment(MenuItem item) {
+
+        item.setChecked(true);
+
+        switch (item.getItemId()) {
+            case R.id.action_home:
+                // Action to perform when Home Menu item is selected.
+                pushFragment(new HomeFragment());
+                break;
+            case R.id.action_camera:
+                // Action to perform when Camera Menu item is selected.
+                Intent intent = new Intent(MainActivity.this, FaceTrackerActivity.class);
+                intent.putExtra("method", "recognize");
+                startActivity(intent);
+                break;
+            case R.id.action_account:
+                // Action to perform when Account Menu item is selected.
+//                pushFragment(new AccountFragment());
+                break;
+        }
+    }
+
+    protected void pushFragment(Fragment fragment) {
+        if (fragment == null)
+            return;
+
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager != null) {
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            if (ft != null) {
+                ft.replace(R.id.rootLayout, fragment);
+                ft.commit();
+            }
+        }
     }
 }

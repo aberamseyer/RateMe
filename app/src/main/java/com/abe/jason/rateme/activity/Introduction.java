@@ -52,7 +52,7 @@ public class Introduction extends AppIntro {
         showStatusBar(false);
 
         // Hide Skip/Done button
-        showSkipButton(true);
+        showSkipButton(false);
         setProgressButtonEnabled(true);
     }
 
