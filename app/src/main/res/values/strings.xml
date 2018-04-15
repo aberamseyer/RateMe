@@ -18,4 +18,5 @@
     <string name="yourrating"><i>Your Rating</i></string>
     <string name="rate_someone">Rate Someone</string>
     <string name="joe_shmoe">Joe Shmoe</string>
+    <string name="delete_face_profile">Delete Face Profile</string>
 </resources>

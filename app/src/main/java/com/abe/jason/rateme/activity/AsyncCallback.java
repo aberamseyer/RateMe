@@ -8,4 +8,5 @@ package com.abe.jason.rateme.activity;
 
 public interface AsyncCallback {
     void recognizeResponse(String id);
+    void deleteProfileResponse(String id);
 }

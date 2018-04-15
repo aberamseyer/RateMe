@@ -24,7 +24,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -95,22 +94,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
             requestCameraPermission();
         }
 
-        // Handler for camera button
-//        final ImageView cameraButton = (ImageView) findViewById(R.id.cameraButton);
-//        View.OnClickListener clickListener = new View.OnClickListener() {
-//            public void onClick(View v) {
-//                if (v.equals(cameraButton)) {
-//                    // Behavior on click
-//                    Context context = getApplicationContext();
-//                    CharSequence text = "Triggered";
-//                    int duration = Toast.LENGTH_SHORT;
-//
-//                    Toast toast = Toast.makeText(context, text, duration);
-//                    toast.show();
-//                }
-//            }
-//        };
-//        cameraButton.setOnClickListener(clickListener);
         findViewById(R.id.btn_camera_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -439,5 +422,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                     });
             }
         }
+
+        @Override
+        public void deleteProfileResponse(String id) { }
     }
 }
