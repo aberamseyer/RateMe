@@ -1,5 +1,6 @@
 package com.abe.jason.rateme.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abe.jason.rateme.R;
 import com.google.firebase.database.DataSnapshot;
@@ -19,7 +21,16 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.xml.datatype.Duration;
+
 public class HomeFragment extends Fragment {
+    private Set<View> profileViews;
+    private RatingBar mRatingBar;
+    private TextView firstTwo;
+    private TextView lastTwo;
+    private TextView nameTextView;
+    private ProgressBar mProgressBar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -27,18 +38,38 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            updateState();
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        final Set<View> profileViews = new HashSet();
-        final RatingBar mRatingBar = view.findViewById(R.id.myRatingBar);
-        final TextView firstTwo = view.findViewById(R.id.myRatingFirst2);
-        final TextView lastTwo = view.findViewById(R.id.myRatingLast2);
-        final TextView nameTextView = view.findViewById(R.id.myName);
-        final ProgressBar mProgressBar = view.findViewById(R.id.progress_loader);
+        profileViews = new HashSet();
+        mRatingBar = view.findViewById(R.id.myRatingBar);
+        firstTwo = view.findViewById(R.id.myRatingFirst2);
+        lastTwo = view.findViewById(R.id.myRatingLast2);
+        nameTextView = view.findViewById(R.id.myName);
+        mProgressBar = view.findViewById(R.id.progress_loader);
         profileViews.add(mRatingBar); profileViews.add(firstTwo); profileViews.add(lastTwo); profileViews.add(nameTextView);
 
         for(View currView : profileViews)
             currView.setVisibility(View.INVISIBLE);
 
+        updateState();
+
+        view.findViewById(R.id.btn_recognize).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FaceTrackerActivity.class);
+                intent.putExtra("method", "recognize");
+                startActivityForResult(intent, 1);
+            }
+        });
+    }
+
+    public void updateState() {
         MainActivity.mFirebaseDatabase.child("users").child(MainActivity.mFireBaseUserId).addListenerForSingleValueEvent(new ValueEventListener() { // reads the data once
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -60,15 +91,6 @@ public class HomeFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) { }
-        });
-
-        view.findViewById(R.id.btn_recognize).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), FaceTrackerActivity.class);
-                intent.putExtra("method", "recognize");
-                startActivity(intent);
-            }
         });
     }
 }

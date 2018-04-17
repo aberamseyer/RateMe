@@ -130,11 +130,13 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         //accessing layout children
         RatingBar ratingBar = (RatingBar)v.findViewById(R.id.ratingBar);
         ratingBar.setRating(rating);
+        ratingBar.setStepSize(0.01f);
         TextView userName = (TextView)v.findViewById(R.id.name);
         userName.setText(name);
 
         if(name.equals("") || name == null) {
             ratingBar.setNumStars(0);
+            ratingBar.setVisibility(View.INVISIBLE);
         }
 
         v.measure(View.MeasureSpec.getSize(v.getMeasuredWidth()), View.MeasureSpec.getSize(v.getMeasuredHeight()));

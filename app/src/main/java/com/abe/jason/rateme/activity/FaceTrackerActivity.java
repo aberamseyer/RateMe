@@ -49,6 +49,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.net.DatagramSocketImpl;
 import java.util.Locale;
 
 /**
@@ -65,6 +66,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
+
+    private String detectedUserID; //TODO pass id to profile activity and use it and update ui
 
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
@@ -308,6 +311,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     private class GraphicFaceTracker extends Tracker<Face> implements AsyncCallback {
         private GraphicOverlay mOverlay;
         private FaceGraphic mFaceGraphic;
+        private String recognizedUserID;
 
         GraphicFaceTracker(GraphicOverlay overlay) {
             mOverlay = overlay;
@@ -382,6 +386,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         @Override
         public void recognizeResponse(String id) {
+            recognizedUserID = id;
             switch (id) {
                 case "-1":
                     Toast.makeText(FaceTrackerActivity.this, "Couldn't recognize face", Toast.LENGTH_SHORT).show();
@@ -411,7 +416,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                                             Intent myIntent = new Intent(FaceTrackerActivity.this, ProfileActivity.class);
                                             myIntent.putExtra("passedName", FaceGraphic.name); //Optional parameters
                                             myIntent.putExtra("passedRating", FaceGraphic.rating); //Optional parameters
-                                            FaceTrackerActivity.this.startActivity(myIntent);
+                                            myIntent.putExtra("recognizedID", recognizedUserID);
+                                            FaceTrackerActivity.this.startActivityForResult(myIntent, 1);
                                         }
                                     });
                                 } catch (NumberFormatException e) { }

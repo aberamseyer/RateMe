@@ -45,6 +45,8 @@ public class ProfileFragment extends Fragment implements AsyncCallback {
         });
     }
 
+
+
     @Override
     public void recognizeResponse(String id) { }
 
