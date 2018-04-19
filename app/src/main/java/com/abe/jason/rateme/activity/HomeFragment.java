@@ -1,16 +1,15 @@
 package com.abe.jason.rateme.activity;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.abe.jason.rateme.R;
 import com.google.firebase.database.DataSnapshot;
@@ -21,9 +20,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.xml.datatype.Duration;
-
 public class HomeFragment extends Fragment {
+    private static final String TAG = "HomeFragment.java";
+
     private Set<View> profileViews;
     private RatingBar mRatingBar;
     private TextView firstTwo;
@@ -57,7 +56,8 @@ public class HomeFragment extends Fragment {
         for(View currView : profileViews)
             currView.setVisibility(View.INVISIBLE);
 
-        updateState();
+        if(MainActivity.mFirebaseDatabase != null)
+            updateState();
 
         view.findViewById(R.id.btn_recognize).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +70,8 @@ public class HomeFragment extends Fragment {
     }
 
     public void updateState() {
-        MainActivity.mFirebaseDatabase.child("users").child(MainActivity.mFireBaseUserId).addListenerForSingleValueEvent(new ValueEventListener() { // reads the data once
+        // will update any time the user's rating is changed
+        MainActivity.mFirebaseDatabase.child("users").child(MainActivity.mFireBaseUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
@@ -87,6 +88,9 @@ public class HomeFragment extends Fragment {
                             currView.setVisibility(View.VISIBLE);
                         mProgressBar.setVisibility(View.GONE);
                     } catch (NumberFormatException e) { }
+                }
+                else {
+                    Log.d(TAG, "doesn't exist");
                 }
             }
             @Override

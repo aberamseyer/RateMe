@@ -11,4 +11,5 @@
     <color name='darker'>#f2cdc9</color>
     <color name="textColor">#5a595b</color>
     <color name="textTranslucent">#cbcbcd</color>
+    <color name="transparent">#00000000</color>
 </resources>

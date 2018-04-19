@@ -15,8 +15,16 @@
     <string name="logout">Log Out</string>
     <string name="train">Train</string>
     <string name="recognize">Recognize</string>
-    <string name="yourrating"><i>Your Rating</i></string>
+    <string name="yourrating"><i>Your Rating:</i></string>
     <string name="rate_someone">Rate Someone</string>
     <string name="joe_shmoe">Joe Shmoe</string>
     <string name="delete_face_profile">Delete Face Profile</string>
+    <string name="first_name">First Name:</string>
+    <string name="submit">Submit</string>
+    <string name="registration_hint">It looks like this is your first time using RateMe. We need your name so users can recognize you when they rate you!</string>
+    <string name="registration_title">Who is this again?</string>
+    <string name="change_name">Change name</string>
+    <string name="first_name_hint">Only letters allowed</string>
+    <string name="cancel">Cancel</string>
+    <string name="account_management">Account Management</string>
 </resources>

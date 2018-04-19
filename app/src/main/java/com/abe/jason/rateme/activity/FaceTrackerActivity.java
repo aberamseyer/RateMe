@@ -49,7 +49,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
-import java.net.DatagramSocketImpl;
 import java.util.Locale;
 
 /**
@@ -431,5 +430,10 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         @Override
         public void deleteProfileResponse(String id) { }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        finish();
     }
 }

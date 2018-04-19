@@ -11,11 +11,11 @@ import android.widget.Toast;
 import com.abe.jason.rateme.R;
 import com.abe.jason.rateme.kairos.delete_face.DeleteFaceProfileRequest;
 
-public class ProfileFragment extends Fragment implements AsyncCallback {
+public class AccountFragment extends Fragment implements AsyncCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        return inflater.inflate(R.layout.fragment_account, container, false);
     }
 
     @Override
@@ -40,7 +40,13 @@ public class ProfileFragment extends Fragment implements AsyncCallback {
         view.findViewById(R.id.btn_delete_face_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DeleteFaceProfileRequest(getContext(), ProfileFragment.this).execute();
+                new DeleteFaceProfileRequest(getContext(), AccountFragment.this).execute();
+            }
+        });
+        view.findViewById(R.id.btn_change_name).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), RegistrationActivity.class).putExtra("method", "change"));
             }
         });
     }

@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     FaceGraphic(GraphicOverlay overlay, Context context) {
         super(overlay);
         this.context = context;
-        final int selectedColor = Color.YELLOW;
+        final int selectedColor = Color.WHITE;
 
         mFacePositionPaint = new Paint();
         mFacePositionPaint.setColor(selectedColor);
@@ -128,9 +129,12 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         View v = mInflater.inflate(R.layout.info_overlay, null);
 
         //accessing layout children
-        RatingBar ratingBar = (RatingBar)v.findViewById(R.id.ratingBar);
-        ratingBar.setRating(rating);
+        RatingBar ratingBar = v.findViewById(R.id.ratingBar);
+        ratingBar.setNumStars(5);
         ratingBar.setStepSize(0.01f);
+        ratingBar.setRating(rating);
+        Log.d(TAG, "rating: " + rating + "\nstep size: " + ratingBar.getStepSize());
+
         TextView userName = (TextView)v.findViewById(R.id.name);
         userName.setText(name);
 

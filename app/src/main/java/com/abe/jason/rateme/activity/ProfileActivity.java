@@ -2,8 +2,8 @@ package com.abe.jason.rateme.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
@@ -11,20 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abe.jason.rateme.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
     private String name;
@@ -38,13 +32,13 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView instructionText;
 
     // Firebase variables
-    FirebaseUser mFirebaseUser;
     public static DatabaseReference mFirebaseDatabase;
     public static String mFireBaseUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final ArrayList<Double> defaultList = new ArrayList<Double>(1);
         setContentView(R.layout.profile_view);
 
         Intent intent = getIntent();
@@ -72,14 +66,17 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) { // the very existence of this snapshot means the user has registered, we're good to go. mark them as active
                     ArrayList<Double> thelist = (ArrayList<Double>) dataSnapshot.child("ratings").getValue();
-                    Toast.makeText(
+                    if(thelist == null)
+                        thelist = defaultList;
+                    /*Toast.makeText(
                         ProfileActivity.this,
                         thelist.toString(),
                         Toast.LENGTH_LONG)
-                    .show();
+                    .show();*/
                     updateRatingAndCount(thelist);
                 } else {
-                    //???
+                    // ???
+                    // pretty much
                 }
             }
 
@@ -116,6 +113,9 @@ public class ProfileActivity extends AppCompatActivity {
 //                                    thelist.toString(),
 //                                    Toast.LENGTH_LONG)
 //                                    .show();
+                            if(thelist == null) {
+                                thelist = defaultList;
+                            }
                             thelist.add(newRating);
 
                             updateRatings(thelist);
@@ -149,14 +149,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     public double calculateAverage(ArrayList<Double> values) {
         double total = 0;
-        for(int i = 0; i < values.size(); i++) {
+        for (int i = 0; i < values.size(); i++) {
             //Firebase returns doubles and longs, can't just cast
             String s = values.get(i) + "";
             double d = Double.parseDouble(s);
 
             total += d;
         }
-        return (values.size() > 0) ? total/values.size() : 0;
+        return values.size() != 0 ? total/values.size() : 0;
     }
 
     public void updateRatingAndCount(ArrayList<Double> list) {
@@ -185,28 +185,18 @@ public class ProfileActivity extends AppCompatActivity {
                 .child(mFireBaseUserId)
                 .child("ratings")
                 .setValue(list);
-        Toast.makeText(
+        /*Toast.makeText(
             ProfileActivity.this,
             "Ratings are now: " + list.toString(),
             Toast.LENGTH_LONG)
-        .show();
+        .show();*/
     }
 
     public void thankForRating() {
-        this.instructionText.setText("Thanks for the rating!");
-        this.ratingBar.setVisibility(View.INVISIBLE);
-        this.submitButton.setEnabled(false);
+//        this.instructionText.setText("Thanks for the rating!");
+//        this.ratingBar.setVisibility(View.INVISIBLE);
+//        this.submitButton.setEnabled(false);
+        Toast.makeText(ProfileActivity.this, "Thanks for the rating!", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
