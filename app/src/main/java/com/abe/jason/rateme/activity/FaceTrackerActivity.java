@@ -23,14 +23,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.abe.jason.rateme.R;
 import com.abe.jason.rateme.kairos.enroll.EnrollRequest;
@@ -48,6 +59,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -55,23 +67,27 @@ import java.util.Locale;
  * Activity for the face tracker app.  This app detects faces with the rear facing camera, and draws
  * overlay graphics to indicate the position, size, and ID of each face.
  */
-public final class FaceTrackerActivity extends AppCompatActivity {
+public final class FaceTrackerActivity extends AppCompatActivity implements ViewSwitcher.ViewFactory {
     private static final String TAG = "FaceTrackerActivity.java";
 
     private FloatingActionButton profileViewBtn;
 
     private CameraSource mCameraSource = null;
-    private boolean hasSubmitted = false;   // flag that ensures we only send 1 request per unique face
+    private boolean hasSubmitted = false;   // flag that ensures we only send arrow_first request per unique face
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
 
-    private String detectedUserID; //TODO pass id to profile activity and use it and update ui
+    private static String detectedUserID = "";
 
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
+    private GestureDetectorCompat mDetector;
+    private ImageSwitcher imageSwitcher;
+    private int animationCounter = 1;
+    private Handler imageSwitcherHandler;
     //==============================================================================================
     // Activity Methods
     //==============================================================================================
@@ -86,7 +102,32 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
+        mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
+        imageSwitcher = findViewById(R.id.arrow_switcher);
+        imageSwitcher.setFactory(this);
+        imageSwitcherHandler = new Handler(Looper.getMainLooper());
+        imageSwitcher.setVisibility(View.INVISIBLE);
+        imageSwitcherHandler.post(new Runnable() { // switches the arrow between the two versions of it automatically
+            @Override
+            public void run() {
+                int delayed = 0;
+                switch (animationCounter++) {
+                    case 1:
+                        imageSwitcher.setImageResource(R.drawable.arrow_first);
+                        delayed = 650;
+                        break;
+                    case 2:
+                        imageSwitcher.setImageResource(R.drawable.arrow_second);
+                        delayed = 300;
+                        break;
+                }
+                animationCounter %= 3;
+                if(animationCounter == 0 ) animationCounter = 1;
+
+                imageSwitcherHandler.postDelayed(this, delayed);
+            }
+        });
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -107,6 +148,13 @@ public final class FaceTrackerActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
 
     /**
      * Handles the requesting of the camera permission.  This includes
@@ -288,6 +336,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         }
     }
 
+
     //==============================================================================================
     // Graphic Face Tracker
     //==============================================================================================
@@ -343,6 +392,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
                 }, new CameraSource.PictureCallback() {
                     @Override
                     public void onPictureTaken(byte[] bytes) {
+                        bytes = scaleDown(bytes);
+
                         switch ("" + getIntent().getStringExtra("method")) {
                             case "enroll":
                                 new EnrollRequest(bytes, FaceTrackerActivity.this).execute();
@@ -365,6 +416,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
+            FaceTrackerActivity.detectedUserID = "";
+            imageSwitcher.setVisibility(View.INVISIBLE);
             mOverlay.remove(mFaceGraphic);
         }
 
@@ -378,13 +431,16 @@ public final class FaceTrackerActivity extends AppCompatActivity {
             FaceGraphic.info = "";
             FaceGraphic.rating = 0.0f;
             FaceGraphic.name = "";
-            try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
+            FaceTrackerActivity.detectedUserID = "";
+            imageSwitcher.setVisibility(View.INVISIBLE);
+//            try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
             hasSubmitted = false;
             Log.d(TAG, "onDone()");
         }
 
         @Override
         public void recognizeResponse(String id) {
+            FaceTrackerActivity.detectedUserID = id;
             recognizedUserID = id;
             switch (id) {
                 case "-1":
@@ -406,19 +462,20 @@ public final class FaceTrackerActivity extends AppCompatActivity {
 
                                     FaceGraphic.info += ", " + String.format(Locale.getDefault(), "%.1f", rating) + " stars";
                                     FaceGraphic.rating = rating;
-
-                                    profileViewBtn = findViewById(R.id.viewProfileBtn);
-                                    profileViewBtn.setVisibility(View.VISIBLE);
-                                    profileViewBtn.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Intent myIntent = new Intent(FaceTrackerActivity.this, ProfileActivity.class);
-                                            myIntent.putExtra("passedName", FaceGraphic.name); //Optional parameters
-                                            myIntent.putExtra("passedRating", FaceGraphic.rating); //Optional parameters
-                                            myIntent.putExtra("recognizedID", recognizedUserID);
-                                            FaceTrackerActivity.this.startActivityForResult(myIntent, 1);
-                                        }
-                                    });
+                                    imageSwitcher.setVisibility(View.VISIBLE);
+                                    imageSwitcher.bringToFront();
+//                                    profileViewBtn = findViewById(R.id.viewProfileBtn);
+//                                    profileViewBtn.setVisibility(View.VISIBLE);
+//                                    profileViewBtn.setOnClickListener(new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//                                            Intent myIntent = new Intent(FaceTrackerActivity.this, ProfileActivity.class);
+//                                            myIntent.putExtra("passedName", FaceGraphic.name); //Optional parameters
+//                                            myIntent.putExtra("passedRating", FaceGraphic.rating); //Optional parameters
+//                                            myIntent.putExtra("recognizedID", recognizedUserID);
+//                                            FaceTrackerActivity.this.startActivityForResult(myIntent, arrow_first);
+//                                        }
+//                                    });
                                 } catch (NumberFormatException e) { }
                             }
                         }
@@ -435,5 +492,58 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         finish();
+    }
+
+    /*
+    scales down the image if it's big
+     */
+    private byte[] scaleDown(byte[] image) {
+        final int NEW_WIDTH = 1000;
+        Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+        Log.d(TAG, "before scale: " + bmp.getByteCount());
+        Log.d(TAG, bmp.getWidth() + "x" + bmp.getHeight() + " ratio: " + (double) bmp.getHeight()/bmp.getWidth());
+        if(bmp.getWidth() > NEW_WIDTH) {
+            int newHeight = bmp.getHeight() * NEW_WIDTH / bmp.getWidth();
+            Bitmap scaled = Bitmap.createScaledBitmap(bmp, NEW_WIDTH, newHeight, false);
+            Log.d(TAG, "after scale: " + scaled.getByteCount());
+            Log.d(TAG, scaled.getWidth() + "x" + scaled.getHeight() + " ratio: " + (double) scaled.getHeight()/scaled.getWidth());
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            scaled.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            scaled.recycle();
+            bmp.recycle();
+            return out.toByteArray();
+        }
+        bmp.recycle();
+        return image;
+    }
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final String DEBUG_TAG = "Gestures";
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+            Log.d(DEBUG_TAG, "vX: " + velocityX + " vY: " + velocityY);
+            if(velocityY < -1000 && !FaceTrackerActivity.detectedUserID.equals("")) {
+                Intent myIntent = new Intent(FaceTrackerActivity.this, ProfileActivity.class);
+                myIntent.putExtra("passedName", FaceGraphic.name); //Optional parameters
+                myIntent.putExtra("passedRating", FaceGraphic.rating); //Optional parameters
+                myIntent.putExtra("recognizedID", FaceTrackerActivity.detectedUserID);
+                FaceTrackerActivity.this.startActivityForResult(myIntent, 1);
+            }
+            return true;
+        }
+    }
+
+    @Override
+    public View makeView() {
+        ImageView imageView = new ImageView(this);
+//        imageView.setBackgroundColor(0xFFFFFFFF); // transparent
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        imageView.setLayoutParams(
+                new ImageSwitcher.LayoutParams(
+                        ConstraintLayout.LayoutParams.MATCH_PARENT,
+                        ConstraintLayout.LayoutParams.MATCH_PARENT));
+        return imageView;
     }
 }

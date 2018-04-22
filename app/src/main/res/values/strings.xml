@@ -27,4 +27,6 @@
     <string name="first_name_hint">Only letters allowed</string>
     <string name="cancel">Cancel</string>
     <string name="account_management">Account Management</string>
+    <string name="leave_a_rating">Leave a rating!</string>
+    <string name="welcome_to_rateme">Welcome to RateMe!</string>
 </resources>

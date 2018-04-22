@@ -46,6 +46,7 @@ public class RecognizeRequest extends AsyncTask<String, String, String> {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("gallery_name", "test")
+                .addFormDataPart("max_num_results", "1")
                 .addFormDataPart("image", "upload.jpeg",
                         RequestBody.create(MEDIA_TYPE_JPEG, file))
                 .build();

@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,7 +132,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         ratingBar.setNumStars(5);
         ratingBar.setStepSize(0.01f);
         ratingBar.setRating(rating);
-        Log.d(TAG, "rating: " + rating + "\nstep size: " + ratingBar.getStepSize());
+//        Log.d(TAG, "rating: " + rating + "\nstep size: " + ratingBar.getStepSize());
 
         TextView userName = (TextView)v.findViewById(R.id.name);
         userName.setText(name);
