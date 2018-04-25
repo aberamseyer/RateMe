@@ -2,13 +2,14 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     android:background="@drawable/gradient_background">
 
-  <ImageSwitcher
+  <!-- <ImageSwitcher
       android:id="@+id/arrow_switcher"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -18,7 +19,16 @@
       android:background="@color/transparent"
       android:backgroundTint="@color/transparent" >
 
-  </ImageSwitcher>
+  </ImageSwitcher> -->
+  <ImageView
+      android:id="@+id/swipe_up_to_rate"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/arrow_third"
+      tools:ignore="ContentDescription"
+      app:layout_constraintBottom_toTopOf="@id/btn_camera_back"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
 
   <android.support.design.widget.FloatingActionButton
       android:id="@+id/viewProfileBtn"
@@ -53,10 +63,21 @@
       android:id="@+id/btn_camera_back"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
       android:text="Back"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
+
+  <!-- <Button
+      android:id="@+id/btn_nearby"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:text="@string/search_for_people_nearby"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/btn_camera_back" /> -->
 
   <!--  <ImageView
         android:id="@+id/cameraButton"

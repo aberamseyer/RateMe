@@ -29,4 +29,8 @@
     <string name="account_management">Account Management</string>
     <string name="leave_a_rating">Leave a rating!</string>
     <string name="welcome_to_rateme">Welcome to RateMe!</string>
+    <string name="search_for_people_nearby">Search for people nearby</string>
+    <string name="looking_for_nearby_users">Looking for nearby users...</string>
+    <string name="you_are_visible_to_others_while_this_page_is_open">You are visible to others while this page is open</string>
+    <string name="tap_a_user_in_the_list_to_rate_them">Tap a user in the list to rate them</string>
 </resources>

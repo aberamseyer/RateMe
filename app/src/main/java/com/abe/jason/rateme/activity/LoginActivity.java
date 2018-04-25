@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements
                 boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
 
                 //  If the activity has never started before...
-                if (isFirstStart) { // todo change comment for development purposes
+                if (isFirstStart) {
 
                     //  Launch app intro
                     final Intent i = new Intent(LoginActivity.this, Introduction.class);

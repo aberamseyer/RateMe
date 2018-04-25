@@ -22,7 +22,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.abe.jason.rateme"
-        minSdkVersion 24
+        minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -64,14 +64,16 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     // Google Vision API (face detection)
-    implementation 'com.google.android.gms:play-services-vision:12.0.0'
+    implementation 'com.google.android.gms:play-services-vision:15.0.0'
     // Firebase (auth & storage)
-    implementation 'com.google.firebase:firebase-auth:12.0.0'
-    implementation 'com.google.firebase:firebase-database:12.0.0'
-    implementation 'com.google.firebase:firebase-core:12.0.0'
+    implementation 'com.google.firebase:firebase-auth:15.0.0'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
     // Google Login (auth)
-    implementation 'com.google.android.gms:play-services-auth:12.0.0'
+    implementation 'com.google.android.gms:play-services-auth:15.0.0'
     // app intro
     implementation 'com.github.apl-devs:appintro:v4.2.3'
+    // nearby
+    implementation 'com.google.android.gms:play-services-nearby:15.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

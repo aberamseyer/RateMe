@@ -59,14 +59,28 @@ public class HomeFragment extends Fragment {
         if(MainActivity.mFirebaseDatabase != null)
             updateState();
 
-        view.findViewById(R.id.btn_recognize).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btn_face).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), FaceTrackerActivity.class);
+                intent.putExtra("method", "recognize");
+                startActivityForResult(intent, 1);
+            }
+        });
+        view.findViewById(R.id.btn_nearby).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), FindNearbyDevices.class));
+            }
+        });
+        /*view.findViewById(R.id.btn_recognize).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FaceTrackerActivity.class);
                 intent.putExtra("method", "recognize");
                 startActivityForResult(intent, 1);
             }
-        });
+        });*/
     }
 
     public void updateState() {

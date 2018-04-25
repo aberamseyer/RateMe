@@ -50,6 +50,10 @@
             android:label="Registration Activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".activity.FindNearbyDevices"
+            android:label="Find Nearby Devices"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
-
 </manifest>

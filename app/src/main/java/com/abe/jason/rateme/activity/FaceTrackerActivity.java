@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -68,7 +67,7 @@ import java.util.Locale;
  * overlay graphics to indicate the position, size, and ID of each face.
  */
 public final class FaceTrackerActivity extends AppCompatActivity implements ViewSwitcher.ViewFactory {
-    private static final String TAG = "FaceTrackerActivity.java";
+    private static final String TAG = "FaceTrackerActivity";
 
     private FloatingActionButton profileViewBtn;
 
@@ -88,6 +87,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
     private ImageSwitcher imageSwitcher;
     private int animationCounter = 1;
     private Handler imageSwitcherHandler;
+    private ImageView rateArrow;
     //==============================================================================================
     // Activity Methods
     //==============================================================================================
@@ -104,6 +104,15 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         mGraphicOverlay = findViewById(R.id.faceOverlay);
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
+//        findViewById(R.id.btn_nearby).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(FaceTrackerActivity.this, FindNearbyDevices.class));
+//            }
+//        });
+        rateArrow = findViewById(R.id.swipe_up_to_rate);
+        rateArrow.setVisibility(View.INVISIBLE);
+        /*
         imageSwitcher = findViewById(R.id.arrow_switcher);
         imageSwitcher.setFactory(this);
         imageSwitcherHandler = new Handler(Looper.getMainLooper());
@@ -127,7 +136,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
 
                 imageSwitcherHandler.postDelayed(this, delayed);
             }
-        });
+        }); */
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -143,7 +152,8 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
                 FaceGraphic.info = "";
                 FaceGraphic.rating = 0.0f;
                 FaceGraphic.name = "";
-                try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
+                rateArrow.setVisibility(View.INVISIBLE);
+//                try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
                 finish();
             }
         });
@@ -417,7 +427,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
             FaceTrackerActivity.detectedUserID = "";
-            imageSwitcher.setVisibility(View.INVISIBLE);
+            rateArrow.setVisibility(View.INVISIBLE);
             mOverlay.remove(mFaceGraphic);
         }
 
@@ -432,7 +442,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
             FaceGraphic.rating = 0.0f;
             FaceGraphic.name = "";
             FaceTrackerActivity.detectedUserID = "";
-            imageSwitcher.setVisibility(View.INVISIBLE);
+            rateArrow.setVisibility(View.INVISIBLE);
 //            try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
             hasSubmitted = false;
             Log.d(TAG, "onDone()");
@@ -448,7 +458,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
                     hasSubmitted = false;
                     FaceGraphic.rating = 0.0f;
                     FaceGraphic.name = "";
-                    try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
+//                    try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
                     break;
                 default:
                     MainActivity.mFirebaseDatabase.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() { // reads the data once
@@ -462,8 +472,9 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
 
                                     FaceGraphic.info += ", " + String.format(Locale.getDefault(), "%.1f", rating) + " stars";
                                     FaceGraphic.rating = rating;
-                                    imageSwitcher.setVisibility(View.VISIBLE);
-                                    imageSwitcher.bringToFront();
+                                    rateArrow.setVisibility(View.VISIBLE);
+//                                    imageSwitcher.setVisibility(View.VISIBLE);
+//                                    imageSwitcher.bringToFront();
 //                                    profileViewBtn = findViewById(R.id.viewProfileBtn);
 //                                    profileViewBtn.setVisibility(View.VISIBLE);
 //                                    profileViewBtn.setOnClickListener(new View.OnClickListener() {
