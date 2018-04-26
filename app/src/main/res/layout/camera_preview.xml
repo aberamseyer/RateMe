@@ -30,6 +30,16 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
 
+  <ImageView
+      android:tint="@color/white"
+      android:id="@+id/btn_switch_camera"
+      android:src="@drawable/ic_switch_camera"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      android:layout_margin="16dp"/>
+
   <android.support.design.widget.FloatingActionButton
       android:id="@+id/viewProfileBtn"
       android:layout_width="78dp"

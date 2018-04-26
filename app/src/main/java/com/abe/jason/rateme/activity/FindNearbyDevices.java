@@ -39,6 +39,12 @@ public class FindNearbyDevices extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_users);
+        findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         ListView lvFoundUsers = findViewById(R.id.list_nearby);
         final ListAdapter mListAdapter = new ListAdapter(this, usersInList);
         lvFoundUsers.setAdapter(mListAdapter);

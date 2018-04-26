@@ -26,7 +26,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -84,9 +83,6 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
     private GestureDetectorCompat mDetector;
-    private ImageSwitcher imageSwitcher;
-    private int animationCounter = 1;
-    private Handler imageSwitcherHandler;
     private ImageView rateArrow;
     //==============================================================================================
     // Activity Methods
@@ -101,6 +97,17 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         setContentView(R.layout.camera_preview);
 
         mPreview = findViewById(R.id.preview);
+        ImageView switchBtn = findViewById(R.id.btn_switch_camera);
+        switchBtn.bringToFront();
+        if(getIntent().getStringExtra("method").equals("enroll")) {
+            switchBtn.setVisibility(View.GONE);
+        }
+        switchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createCameraSource(true);
+            }
+        });
         mGraphicOverlay = findViewById(R.id.faceOverlay);
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
@@ -141,7 +148,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
-            createCameraSource();
+            createCameraSource(false);
         } else {
             requestCameraPermission();
         }
@@ -203,7 +210,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
      * to other detection examples to enable the barcode detector to detect small barcodes
      * at long distances.
      */
-    private void createCameraSource() {
+    private void createCameraSource(boolean switched) {
 
         Context context = getApplicationContext();
         FaceDetector detector = new FaceDetector.Builder(context)
@@ -227,14 +234,35 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
             // download completes on device.
             Log.w(TAG, "Face detector dependencies are not yet available.");
         }
+        if(switched) {
+            int facing = mCameraSource.getCameraFacing();
+            mCameraSource.release();
 
-        mCameraSource = new CameraSource.Builder(context, detector)
-                .setRequestedPreviewSize(640, 480)
-                .setFacing(getIntent().getStringExtra("method").equals("enroll") ? // use the front camera to enroll faces
-                        CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_FRONT) //switching this for testing
-                .setRequestedFps(30.0f)
-                .setAutoFocusEnabled(true)
-                .build();
+            mCameraSource = new CameraSource.Builder(context, detector)
+                    .setRequestedPreviewSize(720, 1280)
+                    .setFacing(facing == CameraSource.CAMERA_FACING_BACK ?
+                            CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_BACK)
+                    .setRequestedFps(30.0f)
+                    .setAutoFocusEnabled(true)
+                    .build();
+            mPreview.stop();
+            try {
+                mPreview.start(mCameraSource, mGraphicOverlay);
+            } catch (IOException e) {
+                Log.e(TAG, "Unable to start camera source.", e);
+                mCameraSource.release();
+                mCameraSource = null;
+            }
+        }
+        else {
+            mCameraSource = new CameraSource.Builder(context, detector)
+                    .setRequestedPreviewSize(720, 1280)
+                    .setFacing(getIntent().getStringExtra("method").equals("enroll") ? // use the front camera to enroll faces
+                            CameraSource.CAMERA_FACING_FRONT : CameraSource.CAMERA_FACING_BACK) //switching this for testing
+                    .setRequestedFps(30.0f)
+                    .setAutoFocusEnabled(true)
+                    .build();
+        }
     }
 
     /**
@@ -295,7 +323,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Camera permission granted - initialize the camera source");
             // we have permission, so create the camerasource
-            createCameraSource();
+            createCameraSource(false);
             return;
         }
 

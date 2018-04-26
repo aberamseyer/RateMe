@@ -41,6 +41,12 @@ public class ProfileActivity extends AppCompatActivity {
         final ArrayList<Double> defaultList = new ArrayList<Double>(1);
         setContentView(R.layout.profile_view);
 
+        findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         Intent intent = getIntent();
         this.name = intent.getStringExtra("passedName");
         this.rating = intent.getDoubleExtra("passedRating", 0.0);

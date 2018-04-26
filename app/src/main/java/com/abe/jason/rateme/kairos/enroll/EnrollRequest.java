@@ -70,7 +70,8 @@ public class EnrollRequest extends AsyncTask<String, String, String> {
 
             try {
                 EnrollResponse responseData = enrollResponseAdapter.fromJson(response.body().source());
-                responseString = "Successfully enrolled for user " + MainActivity.mFireBaseUserId + ", face_id #: " + responseData.getFaceId();
+//                responseString = "Successfully enrolled for user " + MainActivity.mFireBaseUserId + ", face_id #: " + responseData.getFaceId();
+                responseString = "Successfully enrolled face!";
                 Log.d(TAG, "quality: " + responseData.getImages().get(0).getTransaction().getQuality());
                 success = true;
             } catch (RuntimeException e) {
