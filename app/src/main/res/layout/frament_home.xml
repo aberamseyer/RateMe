@@ -69,8 +69,8 @@
             android:layout_weight="1"
             android:gravity="start"
             android:text="74"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
             android:textColor="@color/textColor"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display3"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 

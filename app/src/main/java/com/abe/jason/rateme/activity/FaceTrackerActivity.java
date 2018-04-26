@@ -509,7 +509,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
     scales down the image if it's big
      */
     private byte[] scaleDown(byte[] image) {
-        final int NEW_WIDTH = 1000;
+        final int NEW_WIDTH = 1500;
         Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
         Log.d(TAG, "before scale: " + bmp.getByteCount());
         Log.d(TAG, bmp.getWidth() + "x" + bmp.getHeight() + " ratio: " + (double) bmp.getHeight()/bmp.getWidth());

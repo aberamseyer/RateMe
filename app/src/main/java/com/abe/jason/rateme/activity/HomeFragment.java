@@ -1,5 +1,6 @@
 package com.abe.jason.rateme.activity;
 
+import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -95,8 +96,15 @@ public class HomeFragment extends Fragment {
                         float rating = Float.parseFloat("" + dataSnapshot.child("rating").getValue());
                         String ratingAsString = String.format(Locale.getDefault(), "%.3f", rating);
                         int decimal = ratingAsString.indexOf(".");
-                        firstTwo.setText(ratingAsString.substring(0, decimal + 2));
-                        lastTwo.setText(ratingAsString.substring(decimal + 2));
+                        startCountAnimation(firstTwo, 0, Float.parseFloat(ratingAsString.substring(0, decimal + 2)), 400, 1);
+//                        firstTwo.setText(ratingAsString.substring(0, decimal + 2));
+//                        lastTwo.setText(ratingAsString.substring(decimal + 2));
+                        if(Integer.parseInt(ratingAsString.substring(decimal + 2)) == 0) {
+                            lastTwo.setText("00");
+                        }
+                        else {
+                            startCountAnimation(lastTwo, 0, Integer.parseInt(ratingAsString.substring(decimal + 2)), 700, 0);
+                        }
                         mRatingBar.setRating(rating);
                         for(View currView : profileViews)
                             currView.setVisibility(View.VISIBLE);
@@ -110,5 +118,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
+    }
+
+    private void startCountAnimation(final TextView textView, float start, float end, int duration, final int precision) {
+        ValueAnimator animator = ValueAnimator.ofFloat(start, end);
+        animator.setDuration(duration);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                textView.setText(String.format("%." + precision + "f", animation.getAnimatedValue()));
+            }
+        });
+        animator.start();
     }
 }
