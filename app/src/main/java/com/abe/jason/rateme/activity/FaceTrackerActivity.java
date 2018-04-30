@@ -72,6 +72,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
 
     private CameraSource mCameraSource = null;
     private boolean hasSubmitted = false;   // flag that ensures we only send arrow_first request per unique face
+    private long lastSubmittedTime = System.currentTimeMillis()-1000;
 
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
@@ -420,7 +421,9 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-            if (mFaceGraphic.inBounds && !hasSubmitted) {
+            long now = System.currentTimeMillis();
+            if (mFaceGraphic.inBounds && !hasSubmitted && (now - lastSubmittedTime) > 1500) { // face is on the screen, we haven't already tried this face, and some time delay has passed
+                lastSubmittedTime = now;
                 hasSubmitted = true;
                 mCameraSource.takePicture(new CameraSource.ShutterCallback() {
                     @Override
