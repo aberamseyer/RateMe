@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
         Intent intent = getIntent();
         this.name = intent.getStringExtra("passedName");
-        this.rating = intent.getDoubleExtra("passedRating", 0.0);
+        this.rating = intent.getDoubleExtra("passedRating", 0);
         this.userID = intent.getStringExtra("recognizedID");
 
         this.nameLabel = findViewById(R.id.nameLabel);
@@ -154,15 +154,28 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public double calculateAverage(ArrayList<Double> values) {
-        double total = 0;
-        for (int i = 0; i < values.size(); i++) {
-            //Firebase returns doubles and longs, can't just cast
-            String s = values.get(i) + "";
-            double d = Double.parseDouble(s);
+        if(values.size() < 12) { // small number of rating will be a simple average
+            double total = 0;
+            for (int i = 0; i < values.size(); i++) {
+                //Firebase returns doubles and longs, can't just cast
+                String s = values.get(i) + "";
+                double d = Double.parseDouble(s);
 
-            total += d;
+                total += d;
+            }
+            return values.size() != 0 ? total / values.size() : 0;
+        } else { //moving average, not exponential bc lazy
+            Double d = new Double (values.size() * 0.50);
+            int range = d.intValue(); //average the last half of the values
+            double total = 0;
+            for(int i = range; i < values.size(); i++) {
+                String s = values.get(i) + "";
+                double d2 = Double.parseDouble(s);
+
+                total += d2;
+            }
+            return values.size() != 0 ? total / range : 0;
         }
-        return values.size() != 0 ? total/values.size() : 0;
     }
 
     public void updateRatingAndCount(ArrayList<Double> list) {

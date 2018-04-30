@@ -84,6 +84,8 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
 
     private GestureDetectorCompat mDetector;
     private ImageView rateArrow;
+
+    private boolean notAllowedRating = false;
     //==============================================================================================
     // Activity Methods
     //==============================================================================================
@@ -500,7 +502,17 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
 
                                     FaceGraphic.info += ", " + String.format(Locale.getDefault(), "%.1f", rating) + " stars";
                                     FaceGraphic.rating = rating;
-                                    rateArrow.setVisibility(View.VISIBLE);
+                                    if (recognizedUserID.equals(MainActivity.mFireBaseUserId)) {
+                                        Toast.makeText(getApplicationContext(), "You can't rate yourself!", Toast.LENGTH_SHORT).show();
+                                        notAllowedRating = true;
+                                        return;
+                                    } else if((boolean)dataSnapshot.child("active").getValue()) {
+                                        Toast.makeText(getApplicationContext(), "This user is not active.", Toast.LENGTH_SHORT).show();
+                                        notAllowedRating = true;
+                                        return;
+                                    } else {
+                                        rateArrow.setVisibility(View.VISIBLE);
+                                    }
 //                                    imageSwitcher.setVisibility(View.VISIBLE);
 //                                    imageSwitcher.bringToFront();
 //                                    profileViewBtn = findViewById(R.id.viewProfileBtn);
@@ -563,7 +575,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
             Log.d(DEBUG_TAG, "vX: " + velocityX + " vY: " + velocityY);
-            if(velocityY < -1000 && !FaceTrackerActivity.detectedUserID.equals("")) {
+            if(velocityY < -1000 && !FaceTrackerActivity.detectedUserID.equals("") && !notAllowedRating) {
                 Intent myIntent = new Intent(FaceTrackerActivity.this, ProfileActivity.class);
                 myIntent.putExtra("passedName", FaceGraphic.name); //Optional parameters
                 myIntent.putExtra("passedRating", FaceGraphic.rating); //Optional parameters
