@@ -500,6 +500,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
                             if(dataSnapshot.exists()) {
                                 FaceGraphic.info = "" + dataSnapshot.child("name").getValue();
                                 FaceGraphic.name =  FaceGraphic.info;
+                                notAllowedRating = false;
                                 try {
                                     float rating = Float.parseFloat("" + dataSnapshot.child("rating").getValue());
 
@@ -509,7 +510,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
                                         Toast.makeText(getApplicationContext(), "You can't rate yourself!", Toast.LENGTH_SHORT).show();
                                         notAllowedRating = true;
                                         return;
-                                    } else if((boolean)dataSnapshot.child("active").getValue()) {
+                                    } else if(!(boolean)dataSnapshot.child("active").getValue()) {
                                         Toast.makeText(getApplicationContext(), "This user is not active.", Toast.LENGTH_SHORT).show();
                                         notAllowedRating = true;
                                         return;

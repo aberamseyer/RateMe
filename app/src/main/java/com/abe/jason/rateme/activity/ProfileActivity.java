@@ -154,7 +154,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public double calculateAverage(ArrayList<Double> values) {
-        if(values.size() < 12) { // small number of rating will be a simple average
+        final double RELEVANT_RATINGS = 30;
+        if(values.size() < RELEVANT_RATINGS) { // small number of rating will be a simple average
             double total = 0;
             for (int i = 0; i < values.size(); i++) {
                 //Firebase returns doubles and longs, can't just cast
@@ -165,6 +166,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
             return values.size() != 0 ? total / values.size() : 0;
         } else { //moving average, not exponential bc lazy
+            // I'm not as lazy: https://sciencing.com/calculate-exponential-moving-averages-8221813.html
+            final double k = 2 / (RELEVANT_RATINGS + 1);
+            double previousRating = Double.parseDouble("" + values.get(values.size() - 2));
+            if(values.size() == 30)
+                previousRating = rating;
+            double currRating = Double.parseDouble("" + values.get(values.size() - 1));
+            return ((currRating - previousRating) * k) + previousRating;
+            /*
             Double d = new Double (values.size() * 0.50);
             int range = d.intValue(); //average the last half of the values
             double total = 0;
@@ -175,6 +184,7 @@ public class ProfileActivity extends AppCompatActivity {
                 total += d2;
             }
             return values.size() != 0 ? total / range : 0;
+            */
         }
     }
 

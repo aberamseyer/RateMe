@@ -59,7 +59,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     FaceGraphic(GraphicOverlay overlay, Context context) {
         super(overlay);
         this.context = context;
-        final int selectedColor = Color.WHITE;
+        final int selectedColor = Color.TRANSPARENT;
 
         mFacePositionPaint = new Paint();
         mFacePositionPaint.setColor(selectedColor);
