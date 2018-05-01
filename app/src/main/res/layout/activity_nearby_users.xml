@@ -71,14 +71,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/cancel"/>
+
     <TextView
         android:id="@+id/nearby_footer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginStart="55dp"
         android:text="@string/you_are_visible_to_others_while_this_page_is_open"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/textColor"
         app:layout_constraintBottom_toTopOf="@id/btn_cancel"
