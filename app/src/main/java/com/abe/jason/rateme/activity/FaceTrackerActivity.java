@@ -23,14 +23,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -68,7 +69,8 @@ import java.util.Locale;
 public final class FaceTrackerActivity extends AppCompatActivity implements ViewSwitcher.ViewFactory {
     private static final String TAG = "FaceTrackerActivity";
 
-    private FloatingActionButton profileViewBtn;
+    private ImageView faceIndicator;
+//    private View faceIndicatorCircle;
 
     private CameraSource mCameraSource = null;
     private boolean hasSubmitted = false;   // flag that ensures we only send arrow_first request per unique face
@@ -99,9 +101,13 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
         super.onCreate(icicle);
         setContentView(R.layout.camera_preview);
 
+        faceIndicator = findViewById(R.id.face_indicator);
+//        faceIndicatorCircle = findViewById(R.id.face_indicator_circle);
         mPreview = findViewById(R.id.preview);
         ImageView switchBtn = findViewById(R.id.btn_switch_camera);
         switchBtn.bringToFront();
+//        faceIndicatorCircle.bringToFront();
+        faceIndicator.bringToFront();
         if(getIntent().getStringExtra("method").equals("enroll")) {
             switchBtn.setVisibility(View.GONE);
         }
@@ -412,7 +418,9 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
          */
         @Override
         public void onNewItem(int faceId, Face item) {
-
+            hasSubmitted = false;
+//            faceIndicatorCircle.setVisibility(View.VISIBLE);
+//            ImageViewCompat.setImageTintList(faceIndicator, ColorStateList.valueOf(getResources().getColor(R.color.white)));
         }
 
         /**
@@ -421,6 +429,7 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
          */
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
+            ImageViewCompat.setImageTintList(faceIndicator, ColorStateList.valueOf(getResources().getColor(R.color.white)));
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
             long now = System.currentTimeMillis();
@@ -445,10 +454,8 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
                                 new RecognizeRequest(bytes, GraphicFaceTracker.this).execute();
                                 break;
                         }
-
                     }
                 });
-
             }
         }
 
@@ -462,6 +469,8 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
             FaceTrackerActivity.detectedUserID = "";
             rateArrow.setVisibility(View.INVISIBLE);
             mOverlay.remove(mFaceGraphic);
+//            faceIndicatorCircle.setVisibility(View.INVISIBLE);
+            ImageViewCompat.setImageTintList(faceIndicator, ColorStateList.valueOf(getResources().getColor(R.color.black)));
         }
 
         /**
@@ -476,9 +485,8 @@ public final class FaceTrackerActivity extends AppCompatActivity implements View
             FaceGraphic.name = "";
             FaceTrackerActivity.detectedUserID = "";
             rateArrow.setVisibility(View.INVISIBLE);
-//            try { profileViewBtn.setVisibility(View.INVISIBLE); } catch (Exception e) {}
-            hasSubmitted = false;
-            Log.d(TAG, "onDone()");
+//            faceIndicatorCircle.setVisibility(View.INVISIBLE);
+//            ImageViewCompat.setImageTintList(faceIndicator, ColorStateList.valueOf(getResources().getColor(R.color.black)));
         }
 
         @Override

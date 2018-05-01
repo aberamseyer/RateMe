@@ -40,6 +40,27 @@
       app:layout_constraintStart_toStartOf="parent"
       android:layout_margin="16dp"/>
 
+  <!-- <View
+      android:id="@+id/face_indicator_circle"
+      android:layout_width="14dp"
+      android:layout_height="14dp"
+      android:background="@drawable/circle"
+      app:layout_constraintEnd_toStartOf="@id/face_indicator"
+      app:layout_constraintBottom_toBottomOf="@id/face_indicator"
+      app:layout_constraintTop_toTopOf="@id/face_indicator"
+      android:layout_marginEnd="8dp"
+      android:visibility="invisible"/> -->
+
+  <ImageView
+      android:tint="@color/black"
+      android:id="@+id/face_indicator"
+      android:src="@drawable/ic_face"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_margin="16dp"/>
+
   <android.support.design.widget.FloatingActionButton
       android:id="@+id/viewProfileBtn"
       android:layout_width="78dp"

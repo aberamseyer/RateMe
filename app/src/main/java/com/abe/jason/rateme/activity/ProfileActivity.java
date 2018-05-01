@@ -22,7 +22,8 @@ import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
     private String name;
-    private Double rating;
+    private Double newRating;
+    private Double previousRating;
     private String userID;
 
     private TextView nameLabel;
@@ -49,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
         Intent intent = getIntent();
         this.name = intent.getStringExtra("passedName");
-        this.rating = intent.getDoubleExtra("passedRating", 0);
+        this.previousRating = intent.getDoubleExtra("passedRating", 0);
         this.userID = intent.getStringExtra("recognizedID");
 
         this.nameLabel = findViewById(R.id.nameLabel);
@@ -59,7 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
         this.instructionText = findViewById(R.id.instructionTextView);
 
         nameLabel.setText(this.name);
-        ratingLabel.setText(Double.toString(this.rating));
+        ratingLabel.setText(Double.toString(this.previousRating));
 
         mFirebaseDatabase = MainActivity.mFirebaseDatabase;
         mFireBaseUserId = this.userID;
@@ -95,16 +96,16 @@ public class ProfileActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final double newRating;
+                final double formattedRating;
 
                 DecimalFormat df = new DecimalFormat("#.##");
                 df.setRoundingMode(RoundingMode.CEILING);
 
                 //only 2 decimal places
-                newRating = Double.parseDouble(df.format(ratingBar.getRating()));
+                formattedRating = Double.parseDouble(df.format(ratingBar.getRating()));
 
                 //to update face tracker and home activity
-                rating = Double.parseDouble(df.format(ratingBar.getRating()));
+                newRating = Double.parseDouble(df.format(ratingBar.getRating()));
 
                 mFirebaseDatabase
                 .child("users")
@@ -122,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
                             if(thelist == null) {
                                 thelist = defaultList;
                             }
-                            thelist.add(newRating);
+                            thelist.add(formattedRating);
 
                             updateRatings(thelist);
                             updateRatingAndCount(thelist);
@@ -148,7 +149,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onStop();
 
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("result", rating);
+        returnIntent.putExtra("result", newRating);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
@@ -168,11 +169,7 @@ public class ProfileActivity extends AppCompatActivity {
         } else { //moving average, not exponential bc lazy
             // I'm not as lazy: https://sciencing.com/calculate-exponential-moving-averages-8221813.html
             final double k = 2 / (RELEVANT_RATINGS + 1);
-            double previousRating = Double.parseDouble("" + values.get(values.size() - 2));
-            if(values.size() == 30)
-                previousRating = rating;
-            double currRating = Double.parseDouble("" + values.get(values.size() - 1));
-            return ((currRating - previousRating) * k) + previousRating;
+            return ((newRating - previousRating) * k) + previousRating;
             /*
             Double d = new Double (values.size() * 0.50);
             int range = d.intValue(); //average the last half of the values
