@@ -1,5 +1,7 @@
 *.iml
 .gradle
+/.idea/
+/.vs/
 /local.properties
 /.idea/workspace.xml
 /.idea/dictionaries/

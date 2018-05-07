@@ -40,7 +40,7 @@ public class AccountFragment extends Fragment implements AsyncCallback {
         view.findViewById(R.id.btn_delete_face_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DeleteFaceProfileRequest(getContext(), AccountFragment.this).execute();
+                new DeleteFaceProfileRequest(getActivity(), AccountFragment.this).execute();
             }
         });
         view.findViewById(R.id.btn_change_name).setOnClickListener(new View.OnClickListener() {
@@ -58,6 +58,6 @@ public class AccountFragment extends Fragment implements AsyncCallback {
 
     @Override
     public void deleteProfileResponse(String id) {
-        Toast.makeText(getContext(), "Face profile for user id " + MainActivity.mFireBaseUserId + " deleted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Face profile for user id " + MainActivity.mFireBaseUserId + " deleted", Toast.LENGTH_SHORT).show();
     }
 }
